@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 from .views import (
     ActivityViewSet,
@@ -32,7 +35,22 @@ router.register(r'activities', ActivityViewSet)
 router.register(r'leaderboard', LeaderboardViewSet)
 router.register(r'workouts', WorkoutViewSet)
 
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response(
+        {
+            'teams': reverse('team-list', request=request, format=format),
+            'users': reverse('user-list', request=request, format=format),
+            'activities': reverse('activity-list', request=request, format=format),
+            'leaderboard': reverse('leaderboard-list', request=request, format=format),
+            'workouts': reverse('workout-list', request=request, format=format),
+        }
+    )
+
+
 urlpatterns = [
+    path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 ]
