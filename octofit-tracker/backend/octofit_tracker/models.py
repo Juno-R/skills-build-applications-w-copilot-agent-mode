@@ -1,7 +1,9 @@
 from django.db import models
+from djongo import models as djongo_models
 
 
 class Team(models.Model):
+    id = djongo_models.ObjectIdField(primary_key=True, default=None)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
 
@@ -13,6 +15,7 @@ class Team(models.Model):
 
 
 class User(models.Model):
+    id = djongo_models.ObjectIdField(primary_key=True, default=None)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -26,6 +29,7 @@ class User(models.Model):
 
 
 class Activity(models.Model):
+    id = djongo_models.ObjectIdField(primary_key=True, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=100)
     duration_minutes = models.FloatField()
@@ -34,12 +38,14 @@ class Activity(models.Model):
 
     class Meta:
         db_table = 'activities'
+        ordering = ['-timestamp']
 
     def __str__(self):
         return f"{self.user.email} - {self.activity_type} @ {self.timestamp}"
 
 
 class LeaderboardEntry(models.Model):
+    id = djongo_models.ObjectIdField(primary_key=True, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.FloatField()
     rank = models.IntegerField()
@@ -47,12 +53,14 @@ class LeaderboardEntry(models.Model):
 
     class Meta:
         db_table = 'leaderboard'
+        ordering = ['rank']
 
     def __str__(self):
         return f"{self.rank}: {self.user.email} ({self.score})"
 
 
 class Workout(models.Model):
+    id = djongo_models.ObjectIdField(primary_key=True, default=None)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -60,23 +68,10 @@ class Workout(models.Model):
 
     class Meta:
         db_table = 'workouts'
+        ordering = ['scheduled_at']
 
     def __str__(self):
         return f"{self.name} for {self.user.email} @ {self.scheduled_at}"
-
-
-    def __str__(self):
-        return f"{self.rank}: {self.user.email} ({self.score})"
-
-
-class Workout(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    scheduled_at = models.DateTimeField()
-
-    class Meta:
-        db_table = 'workouts'
 
     def __str__(self):
         return f"{self.name} for {self.user.email} @ {self.scheduled_at}"

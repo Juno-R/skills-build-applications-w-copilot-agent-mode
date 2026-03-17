@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
+    'django_filters',
     'djongo',
     'octofit_tracker',
 
