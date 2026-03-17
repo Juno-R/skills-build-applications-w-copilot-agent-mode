@@ -63,3 +63,20 @@ class Workout(models.Model):
 
     def __str__(self):
         return f"{self.name} for {self.user.email} @ {self.scheduled_at}"
+
+
+    def __str__(self):
+        return f"{self.rank}: {self.user.email} ({self.score})"
+
+
+class Workout(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    scheduled_at = models.DateTimeField()
+
+    class Meta:
+        db_table = 'workouts'
+
+    def __str__(self):
+        return f"{self.name} for {self.user.email} @ {self.scheduled_at}"
